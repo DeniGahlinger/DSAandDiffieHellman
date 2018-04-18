@@ -1,5 +1,6 @@
 import random
 import math
+from generators import getPrime
 
 p = 0
 g = 0
@@ -17,14 +18,11 @@ def fastModularExp(a,e,n):
         a = (a * a) % n
     
     return c
-
-def getPrime():
-    #TODO
-    return 353
     
-def getPrimitiveRoot():
-    #TODO
-    return 3
+def getPrimitiveRoot(n):
+    set = {num for num in range(1,n) if math.gcd(num, n)}
+    primeroot = [g for g in range(1, n) if set == {pow(g, powers, n) for powers in range(1, n)}]
+    return random.choice(tuple(primeroot))
     
 def generateKeys(p,g):
     k = random.randint(0,p)
@@ -42,13 +40,15 @@ def decrypt(C,K,k,p):
     
 if __name__ == '__main__':   
     print("Diffie-Helmann starting...")
-    p = getPrime()
-    g = getPrimitiveRoot()
+    p = getPrime(500,550)
+    print("p : " + str(p))
+    g = getPrimitiveRoot(p)
+    print("g : " + str(g))
     a,A = generateKeys(p,g)
     b,B = generateKeys(p,g)
     S = calculateSharedKey(A,b,p)
     print("S : " + str(S))
-    M = 19
+    M = 78
     C = encrypt(M,S,p)
     print("C : " + str(C))
     M = decrypt(C,B,a,p)
