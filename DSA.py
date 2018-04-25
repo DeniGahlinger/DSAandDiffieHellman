@@ -1,7 +1,10 @@
 import random
 import math
+from generators import getPrime, getQandZinDSA
 
+#   Implémentation de l'algorithme d'Euclide étendu
 def extendedEuclide(x,q):
+    """Extended Euclide algorithme"""
     s = 0
     old_s = 1
     
@@ -17,14 +20,11 @@ def extendedEuclide(x,q):
         old_s, s = s, old_s - quotien * s
         old_t, t = t, old_t - quotien * t
     return old_s
-    
 
-def calculateQandZ(p):
-    #TODO
-    return (101,78)
+#   
 
 def fastModularExp(a,e,n):
-    """Fast and nonnbijevwnk"""
+    """Calculate a^e mod n"""
     
     c=1
     a = a % n
@@ -36,14 +36,12 @@ def fastModularExp(a,e,n):
         a = (a * a) % n
     
     return c
-
-def primeNumberGenerator(min,max):
-    #TODO
-    return 7879
     
 def generateKeys():
-    p = primeNumberGenerator(100,10000)
-    q, z = calculateQandZ(p)
+    """Generate keys for DSA"""
+    # La generation de nombre premiers n'est fiable qu'avec des nombres plus petits que 2^64 $ cause de la fonction isprime()
+    p = getPrime(18446744073708551616,18446744073709551616)
+    q, z = getQandZinDSA(p)
     h = random.randint(0,p)
     while fastModularExp(h,z,p) == 1:
         h = random.randint(0,p)
@@ -51,16 +49,23 @@ def generateKeys():
     x = random.randint(0,q)
     y = fastModularExp(g,x,p)
     
+    print("\nPublic key : \n")
+    
     print("p : " + str(p))
     print("q : " + str(q))
+    print("g : " + str(g))
+    print("y : " + str(y))
+    
+    print("\nPrivate key : \n")
+    
+    print("x : " + str(x))
+    
     print("z : " + str(z))
     print("h : " + str(h))
-    print("g : " + str(g))
-    print("x : " + str(x))
-    print("y : " + str(y))
     return (p,q,g,x,y)
     
 def signMessage(M,p,q,g,x):
+    """Sign message with DSA"""
     k = random.randint(2,q)
     uK = extendedEuclide(k, q) % q
     print("uK : " + str(uK))
@@ -71,6 +76,7 @@ def signMessage(M,p,q,g,x):
     return (r,s)
     
 def verification(M,p,q,g,y,r,s):
+    """Verificate DSA signature"""
     w = extendedEuclide(s, q) % q
     print("w : " + str(w))
     u1 = (M * w) % q
