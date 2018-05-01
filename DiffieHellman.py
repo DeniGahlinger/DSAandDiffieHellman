@@ -4,31 +4,32 @@ import random
 from generators import getPrime, getFirstPrimitiveRoot
 from functions import fastModularExp
 
-p = 0
-g = 0
+# Global parameters
+p = 0 # a prime integer
+g = 0 # a primitive root mod p
 
-def generateKeys(p,g):
-    """Generate new random Diffie-Helmann Keys"""
-    k = random.randint(0, p)
-    K = fastModularExp(g, k, p)
+def generateKeys(p, g):
+    """Generate new random Diffie-Helmann Keys from prime p and primitive root g"""
+    k = random.randint(0, p) # Secret key
+    K = fastModularExp(g, k, p) # Public key
     return (k, K)
 
-def encrypt(M,S,p):
-    """Encrypt message M with shared key S"""
+def encrypt(M, S, p):
+    """Encrypt message M with shared key S and prime p"""
     return fastModularExp(M*S, 1, p)
 
-def decrypt(C,K,k,p):
-    """Decrypt cyphermessage C with private key k and sender public key K"""
+def decrypt(C, K, k, p):
+    """Decrypt cyphermessage C with private key k and sender public key K and prime p"""
     return fastModularExp(C * fastModularExp(K, p-1-k, p), 1, p)
 
 if __name__ == '__main__':
     print("Diffie-Helmann starting...")
     p = getPrime(100000000000,55000000000000)
     g = getFirstPrimitiveRoot(p)
-    a, A = generateKeys(p,g)
-    b, B = generateKeys(p,g)
-    S = fastModularExp(A,b,p)
-    M = 78
+    a, A = generateKeys(p, g)
+    b, B = generateKeys(p, g)
+    S = fastModularExp(A, b, p) # Shared key
+    M = 78 # Message
     C = encrypt(M,S,p)
     M2 = decrypt(C,B,a,p)
 

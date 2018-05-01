@@ -7,32 +7,34 @@ from functions import fastModularExp, extendedEuclide
 
 def generateKeys():
     """Generate keys for DSA"""
-    # La generation de nombre premiers n'est fiable qu'avec des nombres plus
+    # La génération de nombre premiers n'est fiable qu'avec des nombres plus
     # petits que 2^64 à cause de la fonction isprime(). Cette fonction, d'après
-    # la documentation assure un nombre premier jusqu'à 2^64 puis n'en fait plus
-    # qu'assumer leurs primalités pour des nombres plus gros.
+    # la documentation, assure un nombre premier jusqu'à 2^64 puis n'en fait
+    # plus qu'assumer leurs primalités pour des nombres plus gros.
     p = getPrime(18446744073708551616,18446744073709551616)
     q, z = getQandZinDSA(p)
 
-    # On recherche h tel que h^z mod p != 1
+    # On recherche h entre 1 et p-1, tel que h^z mod p > 1
     h = random.randint(0, p)
     while fastModularExp(h, z, p) == 1:
         h = random.randint(0, p)
 
     g = fastModularExp(h, z, p)
-    x = random.randint(0, q)
-    y = fastModularExp(g, x, p)
+    x = random.randint(0, q) # Private key
+    y = fastModularExp(g, x, p) # Public key
 
     print("\nPublic key : \n")
+    print("y : " + str(y))
 
+    print("\nPublic key components : \n")
     print("p : " + str(p))
     print("q : " + str(q))
     print("g : " + str(g))
-    print("y : " + str(y))
 
     print("\nPrivate key : \n")
-
     print("x : " + str(x))
+
+    print("\nPrivate key components : \n")
     print("z : " + str(z))
     print("h : " + str(h))
 
@@ -40,13 +42,17 @@ def generateKeys():
 
 def signMessage(M, p, q, g, x):
     """Sign message with DSA"""
-    k = random.randint(2,q)
+    k = random.randint(2,q) # Random and never reused
     uK = extendedEuclide(k, q) % q
     print("uK : " + str(uK))
+    print("\nSignature : \n")
     r = fastModularExp(g, k, p) % q
     print("r : " + str(r))
     s = (M + x * r) * uK % q
     print("s : " + str(s))
+    # Ici, la signature est faite sur le message, mais elle devrait être faite
+    # sur le hachage de celui-ci : nous conserverions ainsi l'intégrité et
+    # l'authenticité des données.
     return (r, s)
 
 def verification(M, p, q, g, y, r, s):
