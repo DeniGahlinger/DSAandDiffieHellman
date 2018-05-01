@@ -10,6 +10,10 @@ import random
 #   puis incrémente de façon optimisé cette valeur jusqu'à trouver
 #   le prime suivant le plus proche.
 #   La fonction randprime utilise donc la fonction isprime() de sympy.
+#   Cette fonction isPrime() utilise d'abord le crible d'Eratostène et
+#   utilise ensuite des tests Miller-Rabin pour connaître la primalité
+#   du nombre. Il existe cependant plein d'autres méthodes comme, par
+#   exemple, Fermat, les nombres de Mersenne ou encore le test AKS...
 
 def getPrime(min, max):
     """Return random prime between two numbers"""

@@ -1,4 +1,8 @@
-#   Implémentation Diffie-Hellman et échanges de clés
+#   Implémentation Diffie-Hellman et échanges de clés. Ici, il s'agit d'un
+#   échange entre deux personnes, mais il est tout-à-fait possible de faire des
+#   échanges avec un groupe en utilisant une approche "diviser pour mieux
+#   régner" :
+#   https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Operation_with_more_than_two_parties
 
 import random
 from generators import getPrime, getFirstPrimitiveRoot
